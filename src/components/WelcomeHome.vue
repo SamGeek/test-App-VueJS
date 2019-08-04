@@ -1,8 +1,10 @@
 <template>
-  <div class="hello" v-bind:style="{ 'background-color': color}">
+  <div class="hello" v-bind:style="{ 'background-color': computeColor.color}">
     <div class="content">
       <h1> Welcome {{ name }}</h1>
-      <p>You are {{age}} years old and the appropriate color for you is {{colorName}} set in background</p><br/>
+      <p v-if="age<=0">You are less than a year old and the appropriate color for you is {{computeColor.colorName}} set in background</p>
+      <p v-else-if="age==1">You are {{age}} year old and the appropriate color for you is {{computeColor.colorName}} set in background</p>
+      <p v-else>You are {{age}} years old and the appropriate color for you is {{computeColor.colorName}} set in background</p>
     </div>
   </div>
 </template>
@@ -10,6 +12,27 @@
 <script>
 export default {
   // name: 'Informations',
+  data: function () {
+    return {
+    }
+  },
+  computed: {
+    // un accesseur (getter) calculé
+    computeColor: function () {
+      var colorObject = {}
+      if (this.age >= 1 && this.age <= 20) {
+        colorObject.color = '#03A9F4'
+        colorObject.colorName = 'LightBlue'
+      } else if (this.age <= 50 && this.age > 20) {
+        colorObject.color = '#ef5350'
+        colorObject.colorName = 'LightRed'
+      } else {
+        colorObject.color = '#9E9E9E'
+        colorObject.colorName = 'Gray'
+      }
+      return colorObject
+    }
+  },
   props: {
     name: String,
     age: String,

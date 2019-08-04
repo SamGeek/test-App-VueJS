@@ -19,13 +19,14 @@
         </p>
 
         <p>
-          <label for="name">Name</label>
+          <label for="name">Name</label><br>
           <input  id="name" v-model="name" type="text" name="name">
         </p>
 
         <p>
-          <label for="age">Age</label>
-          <input id="age" v-model="age" type="number" name="age" min="0" >
+          <label for="age">Age</label><br>
+          <!-- <input id="age" v-model="age" type="number" name="age" min="0" > -->
+          <v-date-picker v-model="birthDate" :max-date="maxDate"/>
         </p>
 
         <p>
@@ -41,7 +42,6 @@ import router from '../router'
 const axios = require('axios')
 // Set config defaults when creating the instance
 const instance = axios.create({
-  // baseURL: 'http://localhost:1337'
   baseURL: 'http://207.180.224.107:1337'
 })
 
@@ -50,7 +50,9 @@ export default {
     return {
       errors: [],
       name: null,
-      age: null
+      birthDate: new Date(),
+      maxDate: new Date(),
+      today: new Date()
     }
   },
   // name: 'Informations',
@@ -59,13 +61,13 @@ export default {
   },
   methods: {
     checkForm: function (e) {
-      if (this.name && this.age) {
-        instance.post('/user/computeData', {
+      if (this.name && this.birthDate) {
+        instance.post('/process/age', {
           name: this.name,
-          age: this.age
+          birthDate: this.birthDate
         })
           .then(function (response) {
-            router.push({ name: 'welcome', params: { name: response.data.name, age: response.data.age, color: response.data.color, colorName: response.data.colorName } })
+            router.push({ name: 'welcome', params: { name: response.data.name, age: response.data.age } })
             console.log(response)
           })
           .catch(function (error) {
@@ -78,8 +80,8 @@ export default {
       if (!this.name) {
         this.errors.push('Name required.')
       }
-      if (!this.age) {
-        this.errors.push('Age required.')
+      if (!this.birthDate) {
+        this.errors.push('Birth Date required.')
       }
       e.preventDefault()
     }
